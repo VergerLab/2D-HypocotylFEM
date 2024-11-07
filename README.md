@@ -35,14 +35,17 @@ the recommended way is to use [Mamba](https://mamba.readthedocs.io/en/latest/ins
 
 ### Surface mesh
 
+Stress distribution on the epidermis surface if interfaces are stiffer than the cell domains
 ![Stress distribution on the epidermis surface if interfaces are stiffer than the cell domains](./img/surface.png)
 
 ### 2 bulged cells
 
+Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains
 ![Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains](./img/2buldgedcells.png)
 
-### SOEW 
+### SOEW
 
+Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains
 ![Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains](./img/oeef.png)
 
 ## Citation
