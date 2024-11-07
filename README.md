@@ -9,8 +9,8 @@ This repository contains codes to stretch and apply pressure on 2D meshes repres
 FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions:
 
 - 2D mesh representing the surface of a hypocotyl epidermis with staggered cell files, segmented into two subdomains: the cell and the interface between cells.
-- 2D mesh of the hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
-- 2D mesh of the hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
+- 2D mesh of a hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
+- 2D mesh of a hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
 
 All python scripts can be run through a Jupyter Notebook.
 The analysis of the results is done with a Rscript (OECW_analysis.R) and all ".xdmf" can be visualise with [paraview](https://www.paraview.org/)  
