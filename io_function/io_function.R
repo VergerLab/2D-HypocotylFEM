@@ -166,3 +166,40 @@ glyph_to_obj <- function(tmp, path ){
   cat(obj, file= paste0(path))
 }
 
+
+concatenate_res <- function(data){
+  cn = colnames(data)
+  cn[which(cn== "X.1" | cn == ":1")]="y_coor"
+  cn[which(cn== "X.0" | cn == ":0")]="x_coor"
+  cn = str_replace_all(cn, "[: ]", ".")
+  colnames(data) = cn
+  data%>%transmute(y = y_coor,x = x_coor,
+                            displ_y = Displacement.Vector.1,
+                            displ_x = Displacement.Vector.0,
+                            displ_magnitude = sqrt(Displacement.Vector.0^2+Displacement.Vector.1^2),
+                            VonMises_stress = VonMises_stress,
+                            VonMises_strain = VonMises_strain,
+                            stress_magnitude = stress_magnitude,
+                            strain_magnitude = strain_magnitude,
+                            stress_x = stress_x,
+                            strain_x = strain_x,
+                            stress_y = stress_y,
+                            strain_y = strain_y,
+                            pcstress1 = principal_stress_1,
+                            pcstress2 = principal_stress_2,
+                            angle_stress = angle_stress,
+                            pcstrain1 = principal_strain_1,
+                            pcstrain2 = principal_strain_2,
+                            angle_strain = angle_strain)%>%
+    mutate(pcstress_main = ifelse(abs(pcstress2)>abs(pcstress1), abs(pcstress2), abs(pcstress1)),
+           pcstress_secd = ifelse(abs(pcstress2)>abs(pcstress1), abs(pcstress1), abs(pcstress2)),
+           angle_stress_mod = ifelse(abs(pcstress2)>abs(pcstress1), angle_stress+pi/2, angle_stress),
+           pcstrain_main = ifelse(abs(pcstrain2)>abs(pcstrain1), abs(pcstrain2), abs(pcstrain1)),
+           pcstrain_secd = ifelse(abs(pcstrain2)>abs(pcstrain1), abs(pcstrain1), abs(pcstrain2)),
+           angle_strain_mod = ifelse(abs(pcstrain2)>abs(pcstrain1), angle_strain+pi/2, angle_strain),
+           ani_stress = (abs(pcstress_main)-abs(pcstress_secd))/(abs(pcstress_secd)+abs(pcstress_main)),
+           ani_strain = (abs(pcstrain_main)-abs(pcstrain_secd))/(abs(pcstrain_secd)+abs(pcstrain_main)))
+  
+}
+
+
