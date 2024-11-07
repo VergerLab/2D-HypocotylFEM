@@ -2,11 +2,11 @@
 
 Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascone, Olivier Ali, Stéphane Verger.
 
-This repository contains a Finite Element Model (FEM) of hypocotyl epidermal cells. The FEM framework uses the [bvpy](https://gitlab.inria.fr/mosaic/bvpy) library, and the mesh generation is performed with [GMSH](https://gmsh.info/).
+This repository contains codes to stretch and apply pressure on 2D meshes representing hypocotyl epidermal cells using the Finite Element Method (FEM). The FEM framework uses the [bvpy](https://gitlab.inria.fr/mosaic/bvpy) library, and the mesh generation is performed with [GMSH](https://gmsh.info/).
 
 ## Repository content
 
-Finite Element Method (FEM) analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions:
+FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions:
 
 - 2D mesh representing the surface of a hypocotyl epidermis with staggered cell files, segmented into two subdomains: the cell and the interface between cells.
 - 2D mesh of the hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
