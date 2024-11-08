@@ -43,16 +43,25 @@ Stress distribution on the epidermis surface if interfaces are stiffer than the 
 Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains
 ![Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains](./img/2buldgedcells.png)
 
-### SOEW
+### 2 cells with a Supracellular Outer Epidermal Wall
+
+Stress-strain distribution in the edge region of a longitudinal section of epidermal cells if:
+
+- all cell wall subdomain have uniform mechanical properties
+- the Middle Lamella is softer than the other cell wall domains
+- the Outer Epidermal Edge Filling is softer than the other cell wall domains
+- the Supracellular Outer Epidermal Wall is softer than the other cell wall domains
+- the SOEW and OEEF are softer than the other cell wall domains
 
 Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains
 ![Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains](./img/oeef.png)
 
 ## Citation
 
-preprint: ...almost ready...
+cite the preprint as soon as it is out.
+Meanwhile:
 
-meanwhile: Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascone, Olivier Ali, Stéphane Verger. 2024. "Ultrastructural Characterization of Cell Adhesion in Plants"; Plant Computational Biology Workshop 2024
+>  Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascone, Olivier Ali, Stéphane Verger. 2024. "Ultrastructural Characterization of Cell Adhesion in Plants"; Plant Computational Biology Workshop 2024
 
 
 
