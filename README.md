@@ -46,27 +46,26 @@ mamba activate bvpy-dev_gmsh
 
 ## 3. Usage and Repository content
 
-
-FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions:
+FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions. We tested our hypothesis in three different configurations:
 
 - 2D mesh representing the surface of a hypocotyl epidermis with staggered cell files, segmented into two subdomains: the cell and the interface between cells.
 - 2D mesh of a hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
 - 2D mesh of a hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
 
-All python scripts can be run through a Jupyter Notebook.
-The analysis of the results is done with a Rscript (OECW_analysis.R) and all ".xdmf" can be visualise with [paraview](https://www.paraview.org/)  
+The analysis can be coducted with the Rscript (OECW_analysis.R) and all ".xdmf" can be visualise with [paraview](https://www.paraview.org/)
+Indepenantly, all python scripts can be run through Jupyter Notebook.
 
-
+![Code workflow](./data/out/img/Code_Workflow.png)
 
 ### Surface mesh
 
 Stress distribution on the epidermis surface if interfaces are stiffer than the cell domains
-![Stress distribution on the epidermis surface if interfaces are stiffer than the cell domains](./img/surface.png)
+![Stress distribution on the epidermis surface if interfaces are stiffer than the cell domains](./data/out/img/surface.png)
 
 ### 2 bulged cells
 
 Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains
-![Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains](./img/2buldgedcells.png)
+![Stress distribution in the edge region of a longitudinal section of epidermal cells if interface is softer than the cell wall domains](./data/out/img/2buldgedcells.png)
 
 ### 2 cells with a Supracellular Outer Epidermal Wall
 
@@ -79,14 +78,14 @@ Stress-strain distribution in the edge region of a longitudinal section of epide
 - the SOEW and OEEF are softer than the other cell wall domains
 
 Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains
-![Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains](./img/oeef.png)
+![Stress distribution in the edge region of a longitudinal section of epidermal cells if Outer Epidermal Edge Filling is softer than the other cell wall domains](./data/out/img/oeef.png)
 
 ## Citation
 
 cite the preprint as soon as it is out.
 Meanwhile:
 
->  Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascone, Olivier Ali, Stéphane Verger. 2024. "Ultrastructural Characterization of Cell Adhesion in Plants"; Plant Computational Biology Workshop 2024
+>  Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascon, Olivier Ali, Stéphane Verger. 2024. "Ultrastructural Characterization of Cell Adhesion in Plants"; Plant Computational Biology Workshop 2024
 
 
 
