@@ -1,12 +1,12 @@
 # 2D-Finite Element Modeling (FEM) of hypocotyl epidermal cells
 
-Özer Erguvan<sup>1 </sup>, Adrien Heymans<sup>1 </sup>, Asal Atakhani<sup>2</sup>, Elsa Gascon<sup>3</sup>, Olivier Ali<sup>3 </sup>, Stéphane Verger<sup>1, 2</sup>.
+Özer Erguvan<sup>1 </sup>, Adrien Heymans<sup>1 </sup>, Asal Atakhani<sup>2</sup>, Elsa Gascon<sup>3</sup>, Olivier Ali<sup>3 </sup>, Stéphane Verger<sup>1, 2</sup>
 
-<sub>1. Umeå Plant Science Centre (UPSC), Department of Forest Genetics and Plant Physiology, Swedish University of Agricultural Sciences, 901 83 Umeå, Sweden​.</sub>
+<sub>1. Umeå Plant Science Centre (UPSC), Department of Forest Genetics and Plant Physiology, Swedish University of Agricultural Sciences, 901 83 Umeå, Sweden​</sub>
 
-<sub>2. Umeå Plant Science Centre (UPSC), Department of Plant Physiology, Umeå University, 901 87 Umeå, Sweden​.</sub>
+<sub>2. Umeå Plant Science Centre (UPSC), Department of Plant Physiology, Umeå University, 901 87 Umeå, Sweden​</sub>
 
-<sub>3. Laboratoire Reproduction et Développement des Plantes, Université de Lyon, ENS de Lyon, UCB Lyon, CNRS, INRAE, INRIA, F-69342, Lyon, 69364 Cedex 07, France.​ </sub> 
+<sub>3. Laboratoire Reproduction et Développement des Plantes, Université de Lyon, ENS de Lyon, UCB Lyon, CNRS, INRAE, INRIA, F-69342, Lyon, 69364 Cedex 07, France</sub> 
 
 ## 1. About
 
