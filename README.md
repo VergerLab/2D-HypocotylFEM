@@ -52,7 +52,8 @@ FEM analysis of stress and strain distribution in 2D models of the hypocotyl epi
 - 2D mesh of a hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
 - 2D mesh of a hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
 
-The analysis can be coducted with the Rscript (OECW_analysis.R) and all ".xdmf" can be visualise with [paraview](https://www.paraview.org/)
+The analysis can be coducted with the Rscript (OECW_analysis.R) and all ".xdmf" can be visualise with [paraview](https://www.paraview.org/).
+
 Indepenantly, all python scripts can be run through Jupyter Notebook.
 
 ![Code workflow](./data/out/img/Workflow.png)
