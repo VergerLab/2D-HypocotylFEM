@@ -1,3 +1,5 @@
+> [![DOI](https://zenodo.org/badge/884713445.svg)](https://doi.org/10.5281/zenodo.14192237)  v0.9.0-alpha 
+
 # 2D-Finite Element Modeling (FEM) of hypocotyl epidermal cells
 
 Özer Erguvan<sup>1 </sup>, Adrien Heymans<sup>1 </sup>, Asal Atakhani<sup>2</sup>, Elsa Gascon<sup>3</sup>, Olivier Ali<sup>3 </sup>, Stéphane Verger<sup>1, 2</sup>
