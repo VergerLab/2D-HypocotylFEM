@@ -14,9 +14,9 @@ paraview.simple._DisableFirstRenderCameraReset()
 ###################################################################################
 
 # Path to input XDMF files folder
-input_folder = "./out/SOEW/"
+input_folder = "./data/out/SOEW/"
 # Path to output CSV files folder
-output_folder = "./out/SOEW/csv/"
+output_folder = "./data/out/SOEW/csv/"
 # Define center and radius for selection of the edge
 center = (6.15, 14, 0)  
 radius = 6
@@ -48,9 +48,9 @@ print('cropped selection saved for SOEW simulation in csv files')
 ###################################################################################
 
 # Path to input XDMF files folder
-input_folder = "./out/Epi_Surface/"
+input_folder = "./data/out/Epi_Surface/"
 # Path to output CSV files folder
-output_folder = "./out/Epi_Surface/csv/"
+output_folder = "./data/out/Epi_Surface/csv/"
 
 # Iterate over XDMF files in input folder
 for file_name in os.listdir(input_folder):
@@ -72,9 +72,9 @@ print('Surface simulation saved in csv files')
 ###################################################################################
 
 # Path to input XDMF files folder
-input_folder = "./out/2BuldgedCells/"
+input_folder = "./data/out/2BuldgedCells/"
 # Path to output CSV files folder
-output_folder = "./out/2BuldgedCells/csv/"
+output_folder = "./data/out/2BuldgedCells/csv/"
 
 # Iterate over XDMF files in input folder
 for file_name in os.listdir(input_folder):
