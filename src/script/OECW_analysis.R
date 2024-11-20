@@ -22,7 +22,7 @@ library(tidyverse)
 library(data.table)
 # Folder path
 setwd("~/GitHub/VergerLab/2D-HypocotylFEM/")
-source("./io_function/io_function.R")
+source("./src/io_function/io_function.R")
 
 
 ################
@@ -36,10 +36,10 @@ source("./io_function/io_function.R")
 # - soft ML & stiff CW
 # - stiff ML & soft CW
 
-system("python Hypocot_epi_surface.py")
+system("python ./src/script/Hypocot_epi_surface.py")
 
 
-path_csv = "./out/Epi_Surface/"
+path_csv = "./data/out/Epi_Surface/csv/"
 fls = list.files(path_csv)
 fls = fls[grepl(pattern = "_a", fls)]
 
@@ -76,8 +76,8 @@ for(j in unique(data_surface$simu)){
            y1 = y - pcstress_secd/3000 * sin(angle_stress_mod),
            y2 = y + pcstress_secd/3000 * sin(angle_stress_mod))
   
-  glyph_to_obj(tmp_1, path = paste0("~/GitHub/EpiCells/out/Epi_Surface/",j,"_stress1.obj"))
-  glyph_to_obj(tmp_2, path = paste0("~/GitHub/EpiCells/out/Epi_Surface/",j,"_stress2.obj"))
+  glyph_to_obj(tmp_1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress1.obj"))
+  glyph_to_obj(tmp_2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress2.obj"))
   
   tmp1 = data_surface%>%filter(simu == j)%>%
     filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 25) &(y >= 78.8 & y <= 79.2))|
@@ -95,8 +95,8 @@ for(j in unique(data_surface$simu)){
            y1 = y - pcstrain_secd * sin(angle_strain_mod),
            y2 = y + pcstrain_secd * sin(angle_strain_mod))
   
-  glyph_to_obj(tmp_1, path = paste0("~/GitHub/EpiCells/out/Epi_Surface/",j,"_strain1.obj"))
-  glyph_to_obj(tmp_2, path = paste0("~/GitHub/EpiCells/out/Epi_Surface/",j,"_strain2.obj"))
+  glyph_to_obj(tmp_1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain1.obj"))
+  glyph_to_obj(tmp_2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain2.obj"))
   
 }
 
@@ -111,10 +111,10 @@ for(j in unique(data_surface$simu)){
 # 1 scenarios: 
 # - soft ML & stiff CW
 
-system("python Hypocot_epi_2buldgedCells.py")
+system("python ./src/script/Hypocot_epi_2buldgedCells.py")
 
 # Find files names
-path_csv = "./out/2BuldgedCells/csv/"
+path_csv = "./data/out/2BuldgedCells/csv/"
 fls = list.files(path_csv)
 fls = fls[grepl(pattern = "_a", fls)]
 
@@ -163,7 +163,7 @@ buldV%>%
   geom_line(size = 1.2)+
   facet_grid(~unit, scale = 'free')+
   theme_classic()+coord_flip()+viridis::scale_colour_viridis(discrete = T, option = "D")
-ggsave("./img/2BuldgedCells_anticlinal_stress-strain-angle.png")
+ggsave("./data/out/img/2BuldgedCells_anticlinal_stress-strain-angle.png")
 
 buldV%>%
   filter(y > 9.2) %>% 
@@ -171,7 +171,7 @@ buldV%>%
   geom_line(size = 1.2)+
   facet_grid(~unit, scale = 'free')+
   theme_classic()+coord_flip()+viridis::scale_colour_viridis(discrete = T, option = "D")
-ggsave("./img/2BuldgedCells_anticlinal_Zoom_stress-strain-angle.png")
+ggsave("./data/out/img/2BuldgedCells_anticlinal_Zoom_stress-strain-angle.png")
 
 
 # Write the main and minor axis of the stress anistropy
@@ -189,8 +189,8 @@ tmp_2 = data_buldged%>%
          y1 = y - pcstress_secd/3000 * sin(angle_stress_mod),
          y2 = y + pcstress_secd/3000 * sin(angle_stress_mod))
 
-glyph_to_obj(tmp_1, path = "./out/2BuldgedCells/glyphs/buldged_cells_stress_1.obj")
-glyph_to_obj(tmp_2, path = "./out/2BuldgedCells/glyphs/buldged_cells_stress_2.obj")
+glyph_to_obj(tmp_1, path = "./data/out/2BuldgedCells/glyphs/buldged_cells_stress_1.obj")
+glyph_to_obj(tmp_2, path = "./data/out/2BuldgedCells/glyphs/buldged_cells_stress_2.obj")
 
 # Write the main and minor axis of the strain anistropy
 tmp_1 = data_buldged%>%
@@ -206,8 +206,8 @@ tmp_2 = data_buldged%>%
          y1 = y - pcstrain_secd * sin(angle_strain_mod),
          y2 = y + pcstrain_secd * sin(angle_strain_mod))
 
-glyph_to_obj(tmp_1, path = "~/GitHub/EpiCells/out/buldged_cells_strain_1.obj")
-glyph_to_obj(tmp_2, path = "~/GitHub/EpiCells/out/buldged_cells_strain_2.obj")
+glyph_to_obj(tmp_1, path = "./data/out/2BuldgedCells/glyphs/buldged_cells_strain_1.obj")
+glyph_to_obj(tmp_2, path = "./data/out/2BuldgedCells/glyphs/buldged_cells_strain_2.obj")
 
 
 ################
@@ -226,7 +226,7 @@ glyph_to_obj(tmp_2, path = "~/GitHub/EpiCells/out/buldged_cells_strain_2.obj")
 # - soft SOEW & OEEF
 
 # Input data frame for the simulation related to this 2D mesh
-path_sim = "./www/sim_paper.csv"
+path_sim = "./data/in/sim_paper.csv"
 sim1 = tibble(simu = "Uniform", Cuti = 10000, IW = 10000, SOEW = 10000, OEEF = 10000, ML = 10000)
 sim2 = tibble(simu = "Weak_ML", Cuti = 10000, IW = 10000, SOEW = 10000, OEEF = 10000, ML = 1000)
 sim3 = tibble(simu = "Weak_OEEF", Cuti = 10000, IW = 10000, SOEW = 10000, OEEF = 1000, ML = 10000)
@@ -238,11 +238,11 @@ sim = rbind(sim5, sim2,sim3, sim4, sim1)%>%
 # Write the input data frame
 write.csv(sim, path_sim)
 
-system("python Hypocot_epi_SOEW.py")
+system("python ./src/script/Hypocot_epi_SOEW.py")
 ############################################
 
 # Find files names
-path_csv = "./out/SOEW/csv/"
+path_csv = "./data/out/SOEW/csv/"
 fls = list.files(path_csv)
 fls = fls[grepl(pattern = "_a", fls)]
 fls = fls[grepl(pattern = "sim", fls)]
@@ -275,7 +275,7 @@ for(j in unique(data$simu)){
            x2 = x - 10*pcstrain_main * sin(angle_strain_mod),
            y1 = y + 10*pcstrain_main * cos(angle_strain_mod),
            y2 = y - 10*pcstrain_main * cos(angle_strain_mod))
-  glyph_to_obj(tmp, path = paste0("./out/SOEW/glyphs/",j,"_strain.obj"))
+  glyph_to_obj(tmp, path = paste0("./data/out/SOEW/glyphs/",j,"_strain.obj"))
 }
 # make stress main glyphs for the low res meshes
 for(j in unique(data$simu)){
@@ -284,7 +284,7 @@ for(j in unique(data$simu)){
            x2 = x - pcstress_main/1000 * sin(angle_stress_mod),
            y1 = y + pcstress_main/1000 * cos(angle_stress_mod),
            y2 = y - pcstress_main/1000 * cos(angle_stress_mod))
-  glyph_to_obj(tmp, path = paste0("./out/SOEW/glyphs/",j,"_stress.obj"))
+  glyph_to_obj(tmp, path = paste0("./data/out/SOEW/glyphs/",j,"_stress.obj"))
   
 }
 
@@ -332,7 +332,7 @@ two_C %>%
   theme_dark()+
   viridis::scale_colour_viridis(discrete = T)
 
-ggsave("./img/SOEW_anticlinal_stress-strain.png")
+ggsave("./data/out/img/SOEW_anticlinal_stress-strain.png")
 
 # Stress & strain data within the SOEW region over the cell junction.
 data_2C_x = data  %>%filter(y >= 12.3)%>%
@@ -370,7 +370,7 @@ two_C_x %>%
   theme_dark()+
   viridis::scale_colour_viridis(discrete = T)
 
-ggsave("./img/SOEW_periclinal_stress-strain.png")
+ggsave("./data/out/img/SOEW_periclinal_stress-strain.png")
 
 
 
