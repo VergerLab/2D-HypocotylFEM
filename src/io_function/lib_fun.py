@@ -2,9 +2,11 @@
 from bvpy.domains import CustomDomain, CustomDomainGmsh
 from bvpy.utils.pre_processing import HeterogeneousParameter
 from bvpy.utils.io import save
-from bvpy.vforms import LinearElasticForm, HyperElasticForm
+import pyvista as pv
+from bvpy.utils.visu_pyvista import visualize
+from bvpy.vforms import LinearElasticForm, StVenantKirchoffForm
 from bvpy.boundary_conditions import dirichlet, NormalDirichlet, NormalNeumann, neumann, Boundary
-from bvpy.utils.visu import plot, set_renderer, _surface_plot_meshfunc
+from bvpy.utils.visu import plot
 import fenics as fe
 import numpy as np
 import sys
@@ -15,9 +17,9 @@ import pandas as pd
 
 def xdmf_save(path, solution, vform):
     solution.rename("Displacement Vector", "")
-    strain = vform.strain(solution)
+    strain = vform.get_strain(solution)
     strain.rename("Strain", "")
-    stress = vform.stress(solution)
+    stress = vform.get_stress(solution)
     stress.rename("Stress", "")
 
     xdmf_file = fe.XDMFFile(fe.MPI.comm_world, path)

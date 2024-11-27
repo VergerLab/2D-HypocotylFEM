@@ -24,32 +24,32 @@ The different study cases are:
 
 ## 2. Install
 
-We recommend to use [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) to create a virtual environment and run the FEM script in it ([Anaconda](https://www.anaconda.com/download) works also)
+You can download the content of the repository using for instance the `git` command line tool
+
+```bash
+git clone https://github.com/VergerLab/2D-HypocotylFEM.git
+cd 2D-HypocotylFEM
+```
 
 #### Requirements
 
 - Python 3.9
 - FEniCS 2019.1.0
 - GMSH 4.11
-- Bvpy-dev_gmsh
+- Bvpy-develop
 - Paraview 5.11.1
 - R 4.3.1
 
-### From Source:
-
-```{bash}
-git clone -b dev_gmsh https://gitlab.inria.fr/mosaic/bvpy.git
-cd bvpy
-mamba env create -f conda/env_OS.yaml -n bvpy-dev_gmsh
-mamba activate bvpy-dev_gmsh
-python setup.py develop --prefix=$CONDA_PREFIX
-```
-
 ### From mamba/conda
 
+>[!NOTE] 
+> We recommend to use [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) to create a virtual environment and run the FEM script in it ([Anaconda](https://www.anaconda.com/download) works also)
+>
+> For more information on how to set-up conda, please check the [conda user guide](https://conda.io/projects/conda/en/latest/user-guide/install)
+
 ```{bash}
-mamba env create -f conda/environment.yaml
-mamba activate bvpy-dev_gmsh
+mamba env create -f conda/hypocot_env.yaml
+mamba activate hypocot_env
 ```
 
 ## 3. Usage and Repository content
