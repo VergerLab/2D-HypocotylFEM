@@ -46,7 +46,7 @@ mesh_file = '../../data/in/2C_buldged.geo'
 initial_scale = 0.08
 generate_mesh(mesh_file, initial_scale)
 mesh_path = '../../data/in/2C_buldged.msh'
-cd = CustomDomainGmsh.read_and_convert_gmsh(path = mesh_path)
+cd = CustomDomainGmsh(fname = mesh_path)
 
 
 # ### Visualizing the Mesh
@@ -130,9 +130,9 @@ stretch = [NormalNeumann(val=-TP, boundary=inner_border),
 # Young's Modulus
 young_values_by_labels = {1:10000, 2:5000}
 heterogeneous_young = HeterogeneousParameter(cd.cdata, young_values_by_labels)
-heterogeneous_Hyperelastic_response = HyperElasticForm(young=heterogeneous_young, poisson = poiss,
-                                                   source=[0., 0., 0.],
-                                                   plane_stress=True)
+elastic_potential = StVenantKirchoffPotential(young=heterogeneous_young, poisson=poiss)
+heterogeneous_Hyperelastic_response = HyperElasticForm(potential_energy=elastic_potential, source=[0., 0., 0.], plane_stress=True)
+
 # Set up the BVP
 nl_inflation = BVP(domain=cd, vform=heterogeneous_Hyperelastic_response, bc=stretch)
 
