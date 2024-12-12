@@ -11,5 +11,5 @@ dependencies:
   - h5py
   - pip
   - pip:
-    - "git+https://gitlab.inria.fr/mosaic/bvpy.git@feature/refactoring-elasticity"
+    - "git+https://gitlab.inria.fr/mosaic/bvpy.git@feature/refactoring-elasticity" # to get the latest version
 
