@@ -4,21 +4,21 @@
   <Domain>
     <Grid Name="TimeSeries" GridType="Collection" CollectionType="Temporal">
       <Grid Name="mesh" GridType="Uniform">
-        <Topology NumberOfElements="198542" TopologyType="Triangle" NodesPerElement="3">
-          <DataItem Dimensions="198542 3" NumberType="UInt" Format="HDF">Hypocot_surface_softML.h5:/Mesh/0/mesh/topology</DataItem>
+        <Topology NumberOfElements="88556" TopologyType="Triangle" NodesPerElement="3">
+          <DataItem Dimensions="88556 3" NumberType="UInt" Format="HDF">Hypocot_surface_softML.h5:/Mesh/0/mesh/topology</DataItem>
         </Topology>
         <Geometry GeometryType="XYZ">
-          <DataItem Dimensions="101312 3" Format="HDF">Hypocot_surface_softML.h5:/Mesh/0/mesh/geometry</DataItem>
+          <DataItem Dimensions="45640 3" Format="HDF">Hypocot_surface_softML.h5:/Mesh/0/mesh/geometry</DataItem>
         </Geometry>
         <Time Value="1" />
         <Attribute Name="Displacement Vector" AttributeType="Vector" Center="Node">
-          <DataItem Dimensions="101312 3" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/0</DataItem>
+          <DataItem Dimensions="45640 3" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/0</DataItem>
         </Attribute>
         <Attribute Name="Strain" AttributeType="Tensor" Center="Node">
-          <DataItem Dimensions="101312 9" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/1</DataItem>
+          <DataItem Dimensions="45640 9" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/1</DataItem>
         </Attribute>
         <Attribute Name="Stress" AttributeType="Tensor" Center="Node">
-          <DataItem Dimensions="101312 9" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/2</DataItem>
+          <DataItem Dimensions="45640 9" Format="HDF">Hypocot_surface_softML.h5:/VisualisationVector/2</DataItem>
         </Attribute>
       </Grid>
     </Grid>
