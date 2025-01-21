@@ -36,7 +36,7 @@ from lib_fun import *
 # 
 # > **Note**  
 # > - The `generate_mesh()` function uses **GMSH** to create `.msh` files from `.geo` files, which define the physical surface attributes.  
-# > - The `read_and_convert_gmsh()` function reads the `.msh` files and converts the data into a format compatible with **bvpy**. This is done through the `CustomDomainGMSH` class.
+# > - The `CustomDomainGMSH` class reads the `.msh` files and converts the data into a format compatible with **bvpy**.
 
 # In[ ]:
 
@@ -45,7 +45,7 @@ mesh_file = '../../data/in/Hypocot_epi_surface.geo'
 initial_scale = 0.01
 generate_mesh(mesh_file, initial_scale)
 mesh_path = '../../data/in/Hypocot_epi_surface.msh'
-cd = CustomDomainGmsh.read_and_convert_gmsh(path = mesh_path)
+cd = CustomDomainGmsh(fname = mesh_path)
 
 
 # ### Visualizing the Mesh
@@ -111,9 +111,10 @@ stretch = [dirichlet([0.,-ApplyDispl,0.], boundary= bottom_border), # applied di
 # Young's Modulus
 young_values_by_labels = {1:10000, 2:5000}
 heterogeneous_young = HeterogeneousParameter(cd.cdata, young_values_by_labels)
-heterogeneous_Hyperelastic_response = HyperElasticForm(young=heterogeneous_young, poisson = poiss,
-                                                   source=[0., 0., 0.],
-                                                   plane_stress=True)
+elastic_potential = StVenantKirchoffPotential(young=heterogeneous_young, poisson=poiss)
+heterogeneous_Hyperelastic_response = HyperElasticForm(potential_energy=elastic_potential, source=[0., 0., 0.],
+                                                       plane_stress=True)
+
 # Set up the BVP
 nl_stretch = BVP(domain=cd, vform=heterogeneous_Hyperelastic_response, bc=stretch)
 
@@ -166,9 +167,10 @@ xdmf_save(path='../../data/out/Epi_Surface/Hypocot_surface_softML.xdmf', solutio
 # Young's Modulus
 young_values_by_labels = {1:5000, 2:10000}
 heterogeneous_young = HeterogeneousParameter(cd.cdata, young_values_by_labels)
-heterogeneous_Hyperelastic_response = HyperElasticForm(young=heterogeneous_young, poisson = poiss,
-                                                   source=[0., 0., 0.],
-                                                   plane_stress=True)
+elastic_potential = StVenantKirchoffPotential(young=heterogeneous_young, poisson=poiss)
+heterogeneous_Hyperelastic_response = HyperElasticForm(potential_energy=elastic_potential, source=[0., 0., 0.],
+                                                       plane_stress=True)
+
 # Set up the BVP
 nl_stretch = BVP(domain=cd, vform=heterogeneous_Hyperelastic_response, bc=stretch)
 

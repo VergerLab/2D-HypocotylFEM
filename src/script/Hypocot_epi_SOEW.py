@@ -50,7 +50,7 @@ mesh_file = '../../data/in/2C_SOEWdomain.geo'
 initial_scale = 0.15
 generate_mesh(mesh_file, initial_scale)
 mesh_path = '../../data/in/2C_SOEWdomain.msh'
-cd = CustomDomainGmsh.read_and_convert_gmsh(path = mesh_path)
+cd = CustomDomainGmsh(fname = mesh_path)
 
 
 # ### Visualizing the Mesh
@@ -175,7 +175,7 @@ for index, row in df.iloc[start_index:stop_index].iterrows():
     change_thickness_geo(file_path = mesh_file, OCW_thickness= SOEW_thickness)
     scale = initial_scale
     generate_mesh(mesh_file, scale)
-    cd = CustomDomainGmsh.read_and_convert_gmsh(path = mesh_path)
+    cd = CustomDomainGmsh(fname = mesh_path)
     
     stretch = [NormalNeumann(val=-TP, boundary=inner_border),
            dirichlet([-Force,0.0,0.], boundary= left_border),
@@ -191,9 +191,10 @@ for index, row in df.iloc[start_index:stop_index].iterrows():
     # 7 = Inner wall of cell 2
 
     heterogeneous_young = HeterogeneousParameter(cd.cdata, young_values_by_labels)
-    heterogeneous_Hyperelastic_response = HyperElasticForm(young=heterogeneous_young, poisson = poiss,
-                                                   source=[0., 0., 0.],
-                                                   plane_stress=True)
+    elastic_potential = StVenantKirchoffPotential(young=heterogeneous_young, poisson=poiss)
+    heterogeneous_Hyperelastic_response = HyperElasticForm(potential_energy=elastic_potential, source=[0., 0., 0.],
+                                                           plane_stress=True)
+
     heterogeneous_Linearelastic_response = LinearElasticForm(young=heterogeneous_young, poisson = poiss,
                                                    source=[0., 0., 0.],
                                                    plane_stress=True)

@@ -4,7 +4,8 @@ from bvpy.utils.pre_processing import HeterogeneousParameter
 from bvpy.utils.io import save
 import pyvista as pv
 from bvpy.utils.visu_pyvista import visualize
-from bvpy.vforms import LinearElasticForm, StVenantKirchoffForm
+from bvpy.vforms import LinearElasticForm, HyperElasticForm
+from bvpy.vforms.elasticity import StVenantKirchoffPotential
 from bvpy.boundary_conditions import dirichlet, NormalDirichlet, NormalNeumann, neumann, Boundary
 from bvpy.utils.visu import plot
 import fenics as fe
@@ -30,7 +31,13 @@ def xdmf_save(path, solution, vform):
     xdmf_file.write(strain, 1)
     xdmf_file.write(stress, 1)
     
-# Func for change mesh size
 def generate_mesh(mesh_file, scale):
+    """
+    Generate or resize a mesh using Gmsh with the specified scaling factor.
+
+    Args:
+        mesh_file (str): Path to the mesh file.
+        scale (float): Scaling factor for mesh size.
+    """
     print("gmsh "+ mesh_file+ " -2"+ " -clscale "+ f'{scale}')
     call(["gmsh", mesh_file, "-2", "-clscale", f'{scale}'], stdout=DEVNULL, stderr=DEVNULL)
