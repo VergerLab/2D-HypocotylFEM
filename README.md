@@ -1,4 +1,4 @@
-> [![DOI](https://zenodo.org/badge/884713445.svg)](https://doi.org/10.5281/zenodo.14192237)  v0.9.0-alpha 
+> [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14872201.svg)](https://doi.org/10.5281/zenodo.14872201)  v1.0.0
 
 # 2D-Finite Element Modeling (FEM) of hypocotyl epidermal cells
 
