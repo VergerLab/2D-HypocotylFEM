@@ -40,7 +40,7 @@ system("python ./src/script/cross.py")
 path_csv = "./data/out/cross/csv/"
 fls = list.files(path_csv)
 
-data_cross_raw = read.csv(paste0(path_csv, fls[2]))
+data_cross_raw = read.csv(paste0(path_csv, fls[1]))
 data_cross = stress_strain(data_cross_raw)
 data_cross = concatenate_res(data_cross)
 
@@ -56,42 +56,28 @@ tmp2 = data_cross%>%
          y1 = y - pcstress_secd/100 * sin(angle_stress_mod),
          y2 = y + pcstress_secd/100 * sin(angle_stress_mod))
 
-glyph_to_obj(tmp1, path = paste0("./data/out/cross/glyphs/cross03_stress1.obj"))
-glyph_to_obj(tmp2, path = paste0("./data/out/cross/glyphs/cross03_stress2.obj"))
+glyph_to_obj(tmp1, path = paste0("./data/out/cross/glyphs/cross_stress1.obj"))
+glyph_to_obj(tmp2, path = paste0("./data/out/cross/glyphs/cross_stress2.obj"))
 
 data_cross = data_cross%>%
-  mutate(euc = sqrt(x^2+y^2),
-         label = ifelse(euc >= 6.6 & euc <= 7.6, "peri_1",
-                        ifelse(euc >= 12 & euc <= 13, "peri_2",
-                               ifelse(euc >= 16.8 & euc <= 18.1, "peri_3",
-                                      ifelse(euc >= 22, "peri_4","anti")))),
-         )
+  mutate(euc = sqrt(x^2+y^2))
 
 ggplot()+
   geom_point(aes(x,y), data = data_cross)+
   geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
-               filter(euc >= 6.6, euc <= 7.6))+
-  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
-               filter(euc >= 12, euc <= 13))+
-  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
-               filter(euc >= 16.8, euc <= 18.2))+
-  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
                filter(euc >= 22))+
   coord_fixed()+
-  viridis::scale_colour_viridis()+
-  labs(x = "dist from center")
+  viridis::scale_colour_viridis()
 
 ggplot()+
   geom_point(aes(euc,stress_magnitude), data = data_cross)+
-  # geom_point(aes(euc,stress_magnitude, colour = stress_magnitude), data = data_cross %>% 
-  #              filter(label != "anti"))+
-  viridis::scale_colour_viridis()
+  viridis::scale_colour_viridis()+
+  labs(x = "distance from center [µm]",
+       y = "Stress Magnitude [MPa]")+
+  xlim(3,23.5)+
+  theme_classic()
+ggsave("./data/out/img/Cross_StressQ.svg")
 
-data_cross %>% 
-  filter(label != "anti") %>% 
-  ggplot(aes(euc, stress_magnitude))+
-  geom_boxplot(aes(group = label))+
-  labs(x = "dist from center")
 
 ################
 # -- mesh 1 -- #  
@@ -126,45 +112,54 @@ for(fl in fls){
   data_surface = rbind(data_surface, tmp)
 }
 
+data_surface%>%filter(simu == "Stiff cells, soft interface")%>%
+  filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 31.4) &(y >= 78.8 & y <= 79.2))|
+           (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3) | ((y < 85 & y > 75) &(x >= 30.7 & x < 31.3)) )%>%
+  ggplot(aes(x,y))+
+  geom_point(aes(colour =stress_magnitude ))+
+  coord_fixed()+theme_classic()
+  
+  
+
 # Write the main and minor axis of the stress/strain anistropy
 for(j in unique(data_surface$simu)){
   tmp1 = data_surface%>%filter(simu == j)%>%
-    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 25) &(y >= 78.8 & y <= 79.2))|
-             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3))%>%
+    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 31.4) &(y >= 78.8 & y <= 79.2))|
+             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3) | ((y < 85 & y > 75) &(x >= 30.7 & x < 31.3)) )%>%
     mutate(x1 = x + pcstress_main/3000 * sin(angle_stress_mod),
            x2 = x - pcstress_main/3000 * sin(angle_stress_mod),
            y1 = y + pcstress_main/3000 * cos(angle_stress_mod),
            y2 = y - pcstress_main/3000 * cos(angle_stress_mod))
   
   tmp2 = data_surface%>%filter(simu == j)%>%
-    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 25) &(y >= 78.8 & y <= 79.2))|
-             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3))%>%
+    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 31.4) &(y >= 78.8 & y <= 79.2))|
+             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3) | ((y < 85 & y > 75) &(x >= 30.7 & x < 31.3)) )%>%
     mutate(x1 = x + pcstress_secd/3000 * cos(angle_stress_mod),
            x2 = x - pcstress_secd/3000 * cos(angle_stress_mod),
            y1 = y - pcstress_secd/3000 * sin(angle_stress_mod),
            y2 = y + pcstress_secd/3000 * sin(angle_stress_mod))
   
-  glyph_to_obj(tmp_1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress1.obj"))
-  glyph_to_obj(tmp_2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress2.obj"))
+  glyph_to_obj(tmp1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress1.obj"))
+  glyph_to_obj(tmp2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_stress2.obj"))
   
   tmp1 = data_surface%>%filter(simu == j)%>%
-    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 25) &(y >= 78.8 & y <= 79.2))|
-             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3))%>%
+    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 31.4) &(y >= 78.8 & y <= 79.2))|
+             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3) | ((y < 85 & y > 75) &(x >= 30.7 & x < 31.3)) )%>%
     mutate(x1 = x + pcstrain_main * sin(angle_strain_mod),
            x2 = x - pcstrain_main * sin(angle_strain_mod),
            y1 = y + pcstrain_main * cos(angle_strain_mod),
            y2 = y - pcstrain_main * cos(angle_strain_mod))
   
   tmp2 = data_surface%>%filter(simu == j)%>%
-    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 25) &(y >= 78.8 & y <= 79.2))|
-             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3))%>%
+    filter(((y < 85 & y > 75) &(x >= 20.4 & x <= 20.8)) | ((x > 20.4 & x < 31.4) &(y >= 78.8 & y <= 79.2))|
+             (x > 20.8 & x < 20.9 & y > 78.7 & y < 79.3) | ((y < 85 & y > 75) &(x >= 30.7 & x < 31.3)) )%>%
     mutate(x1 = x + pcstrain_secd * cos(angle_strain_mod),
            x2 = x - pcstrain_secd * cos(angle_strain_mod),
            y1 = y - pcstrain_secd * sin(angle_strain_mod),
            y2 = y + pcstrain_secd * sin(angle_strain_mod))
   
-  glyph_to_obj(tmp_1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain1.obj"))
-  glyph_to_obj(tmp_2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain2.obj"))
+  glyph_to_obj(tmp1, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain1.obj"))
+  glyph_to_obj(tmp2, path = paste0("./data/out/Epi_Surface/glyphs/",j,"_strain2.obj"))
   
 }
 
