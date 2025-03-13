@@ -294,10 +294,11 @@ create_cross_section <- function(){
     arrange(euc, atan, id) %>% 
     mutate(type = sort(rep(names, 7)))
   
-  hex_df %>% ggplot(aes(hex_x,hex_y))+
+  hypo_cell %>% ggplot(aes(hex_x,hex_y))+
+    geom_polygon(aes(group = id), colour = "white", size = 3, alpha =0.2, data =hex_df)+
     geom_polygon(aes(group = id), colour = "white", size = 3)+
     geom_point()+
-    coord_fixed()
+    coord_fixed()+theme_classic()
   
   radii = c(1:17,21)
   # radii = c(21)
@@ -461,4 +462,5 @@ write_geo <- function(data, dim = 2, path_geo, averaging = FALSE, extrude=0){
   }
   write(txt, path_geo)
 }
+
 
