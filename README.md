@@ -37,7 +37,7 @@ cd 2D-HypocotylFEM
 - Python 3.9
 - FEniCS 2019.1.0
 - GMSH 4.11
-- Bvpy-develop
+- Bvpy 1.3.1
 - Paraview 5.11.1
 - R 4.3.1
 
