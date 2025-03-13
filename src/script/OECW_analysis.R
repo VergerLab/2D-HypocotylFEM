@@ -26,6 +26,74 @@ source("./src/io_function/io_function.R")
 
 
 ################
+# -- mesh 0 -- #  
+################
+
+# Run python script with the FEM
+# 2D mesh representing the cell wall of a cross section of a plant tissue.
+
+
+
+system("python ./src/script/cross.py")
+
+
+path_csv = "./data/out/cross/csv/"
+fls = list.files(path_csv)
+
+data_cross_raw = read.csv(paste0(path_csv, fls[2]))
+data_cross = stress_strain(data_cross_raw)
+data_cross = concatenate_res(data_cross)
+
+tmp1 = data_cross %>%
+  mutate(x1 = x + pcstress_main/100 * sin(angle_stress_mod),
+         x2 = x - pcstress_main/100 * sin(angle_stress_mod),
+         y1 = y + pcstress_main/100 * cos(angle_stress_mod),
+         y2 = y - pcstress_main/100 * cos(angle_stress_mod))
+
+tmp2 = data_cross%>%
+  mutate(x1 = x + pcstress_secd/100 * cos(angle_stress_mod),
+         x2 = x - pcstress_secd/100 * cos(angle_stress_mod),
+         y1 = y - pcstress_secd/100 * sin(angle_stress_mod),
+         y2 = y + pcstress_secd/100 * sin(angle_stress_mod))
+
+glyph_to_obj(tmp1, path = paste0("./data/out/cross/glyphs/cross03_stress1.obj"))
+glyph_to_obj(tmp2, path = paste0("./data/out/cross/glyphs/cross03_stress2.obj"))
+
+data_cross = data_cross%>%
+  mutate(euc = sqrt(x^2+y^2),
+         label = ifelse(euc >= 6.6 & euc <= 7.6, "peri_1",
+                        ifelse(euc >= 12 & euc <= 13, "peri_2",
+                               ifelse(euc >= 16.8 & euc <= 18.1, "peri_3",
+                                      ifelse(euc >= 22, "peri_4","anti")))),
+         )
+
+ggplot()+
+  geom_point(aes(x,y), data = data_cross)+
+  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
+               filter(euc >= 6.6, euc <= 7.6))+
+  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
+               filter(euc >= 12, euc <= 13))+
+  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
+               filter(euc >= 16.8, euc <= 18.2))+
+  geom_point(aes(x,y, colour = stress_magnitude), data = data_cross %>% 
+               filter(euc >= 22))+
+  coord_fixed()+
+  viridis::scale_colour_viridis()+
+  labs(x = "dist from center")
+
+ggplot()+
+  geom_point(aes(euc,stress_magnitude), data = data_cross)+
+  # geom_point(aes(euc,stress_magnitude, colour = stress_magnitude), data = data_cross %>% 
+  #              filter(label != "anti"))+
+  viridis::scale_colour_viridis()
+
+data_cross %>% 
+  filter(label != "anti") %>% 
+  ggplot(aes(euc, stress_magnitude))+
+  geom_boxplot(aes(group = label))+
+  labs(x = "dist from center")
+
+################
 # -- mesh 1 -- #  
 ################
 
