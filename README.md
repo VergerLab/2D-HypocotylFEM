@@ -18,6 +18,7 @@ The FEM framework uses the [BvPy](https://gitlab.inria.fr/mosaic/bvpy), which is
 
 The different study cases are:
 
+- 2D mesh representing a cross section through a group of adhering turgid cells.
 - 2D mesh representing the surface of a hypocotyl epidermis with staggered cell files, segmented into two subdomains: the cell and the interface between cells.
 - 2D mesh of a hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
 - 2D mesh of a hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
@@ -54,8 +55,9 @@ mamba activate hypocot_env
 
 ## 3. Usage and Repository content
 
-FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions. We tested our hypothesis in three different configurations:
+FEM analysis of stress and strain distribution in 2D models of the hypocotyl epidermis under varied Young's modulus conditions. We tested our hypothesis in four different configurations:
 
+- 2D mesh representing a cross section through a group of adhering turgid cells, where only the cell walls are meshed.
 - 2D mesh representing the surface of a hypocotyl epidermis with staggered cell files, segmented into two subdomains: the cell and the interface between cells.
 - 2D mesh of a hypocotyl longitudinal section with two subdomains: the cell wall and the adhesive layer at the interface.
 - 2D mesh of a hypocotyl longitudinal section with four subdomains: the Supracellular Outer Epidermal Wall (SOEW), the Outer Epidermal Edge Filling (OEEF), the Inner Walls, and the Middle Lamella (ML)
@@ -65,6 +67,11 @@ The analysis can be coducted with the Rscript (OECW_analysis.R) and all ".xdmf" 
 Indepenantly, all python scripts can be run through Jupyter Notebook.
 
 ![Code workflow](./data/out/img/Workflow.png)
+
+### A group of adhering turgid cells
+
+Stress distribution on the cell wall domains after deformation.
+![Stress distribution on the cell wall domains after deformation.](./data/out/img/Global_stress.png)
 
 ### Surface mesh
 
