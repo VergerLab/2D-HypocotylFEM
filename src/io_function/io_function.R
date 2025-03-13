@@ -169,8 +169,8 @@ glyph_to_obj <- function(tmp, path ){
 
 concatenate_res <- function(data){
   cn = colnames(data)
-  cn[which(cn== "X.1" | cn == ":1")]="y_coor"
-  cn[which(cn== "X.0" | cn == ":0")]="x_coor"
+  cn[which(cn== "X.1" | cn == ":1" | cn == "Points.1")]="y_coor"
+  cn[which(cn== "X.0" | cn == ":0" | cn == "Points.0" )]="x_coor"
   cn = str_replace_all(cn, "[: ]", ".")
   colnames(data) = cn
   data%>%transmute(y = y_coor,x = x_coor,
@@ -202,4 +202,263 @@ concatenate_res <- function(data){
   
 }
 
+
+# Function to create hexagon vertices
+hexagon <- function(center_x, center_y, size = 1) {
+  angles <- seq(0, 2 * pi, length.out = 7)  
+  tibble(
+    x = center_x + size * cos(angles),
+    y = center_y + size * sin(angles)
+  )
+}
+
+# Function to generate hexagonal grid
+hex_grid <- function(rows, cols, size = 1) {
+  hex_width <- sqrt(3) * size
+  hex_height <- 2 * size
+  grid <- expand.grid(
+    row = 1:rows,
+    col = 1:cols
+  ) %>%
+    mutate(
+      x = col *sqrt(3)* hex_width + ifelse(row %% 2 == 0, (sqrt(3)*hex_width)/2, 0),
+      y = row * hex_width/2
+    )
+  
+  # Create hexagon polygons
+  hex_data <- grid %>%
+    rowwise() %>%
+    mutate(hex = list(hexagon(x, y, size))) %>%
+    unnest(hex, names_sep = "_") %>%  # Prevents name conflict
+    mutate(id = paste(row, col, sep = "-")) %>%
+    ungroup()
+  
+  return(hex_data)
+}
+
+
+# Define the function to snap a single point to the closest circle
+snap_point <- function(row, radii) {
+  x <- row["x"]
+  y <- row["y"]
+  
+  dist <- sqrt(x^2 + y^2)  # Compute distance from origin
+  closest_r <- radii[which.min(abs(radii - dist))]  # Find closest radius
+  angle <- atan2(y, x)  # Compute angle
+  
+  # Compute new coordinates on the closest circle
+  snapped_x <- closest_r * cos(angle)
+  snapped_y <- closest_r * sin(angle)
+  
+  return(c(snapped_x, snapped_y, closest_r, angle))
+}
+
+# Function to apply snapping transformation
+snap_to_circle <- function(data, radii) {
+  snapped_coords <- t(apply(data[, c("x", "y")], 1, snap_point, radii = radii))
+  colnames(snapped_coords) <- c("snapped_x", "snapped_y", "closest_r", "angle")
+  
+  # Combine with original data
+  data <- cbind(data, snapped_coords)
+  return(data)
+}
+
+create_cross_section <- function(){
+  rows = 20
+  cols = 8
+  hex_df <- hex_grid(rows, cols, size = 3)
+  
+  
+  center = hex_df%>%
+    filter(id == paste0(round(rows/2),"-",round(cols/2))) %>% 
+    dplyr::group_by()%>%
+    dplyr::summarise(cx = mean(x), cy = mean(y), .groups="drop")
+  
+  cell = hex_df%>%
+    dplyr::group_by(id)%>%
+    dplyr::summarise(mx = mean(x), my = mean(y),
+                     .groups="drop")%>%
+    mutate(euc = sqrt((mx-center$cx)^2+(my-center$cy)^2),
+           atan = atan2(my, mx))
+  
+  hypo_cell = hex_df  %>%
+    left_join(cell, by = "id")
+  
+  names = c("0", rep("1", 6), 
+            rep("2", 2*6),
+            rep("3", 3*6), 
+            rep("4", 4*6))
+  
+  hypo_cell = hypo_cell %>% 
+    filter(euc < 22) %>% 
+    arrange(euc, atan, id) %>% 
+    mutate(type = sort(rep(names, 7)))
+  
+  hex_df %>% ggplot(aes(hex_x,hex_y))+
+    geom_polygon(aes(group = id), colour = "white", size = 3)+
+    geom_point()+
+    coord_fixed()
+  
+  radii = c(1:17,21)
+  # radii = c(21)
+  
+  snapp = snap_to_circle(hypo_cell %>% mutate(x = hex_x -center$cx,y = hex_y - center$cy ),
+                         radii)
+  binder = tibble(id = unique(snapp$id), id_cell = 1:length(unique(snapp$id)))
+  snapped_data = snapp
+  df_hypo = snapped_data %>% mutate(x = snapped_x, y = snapped_y) %>% 
+    left_join(binder, by = "id")
+  df_hypo %>% ggplot(aes(snapped_x,snapped_y))+
+    geom_polygon(aes(group = id_cell), colour = "white", size = 3)+
+    geom_point()+
+    coord_fixed()
+  
+  id_cell_vector = unique(df_hypo$id_cell)
+  
+  hypo_cell = NULL
+  for(i in id_cell_vector){
+    
+    tmp = df_hypo %>% filter(id_cell == i) #%>% 
+    #mutate(id_point = paste0(round(closest_r), ";", round(angle*12))) %>% 
+    #filter(!duplicated(id_point))
+    
+    sf_linestring <- st_sfc(st_linestring(as.matrix(rbind(tmp[, c("x", "y")],tmp[1, c("x", "y")]))), crs = 2056)
+    my_multilinestring = sf::st_sf(geom = sf::st_sfc(sf_linestring), crs = 2056)
+    r_poly_ruff <-  sf::st_union(my_multilinestring)%>% sf::st_polygonize() %>% sf::st_collection_extract()
+    r_poly_smooth <- smoothr::smooth(r_poly_ruff, method = "ksmooth", smoothness = 0.5)
+    shrunken_polygon <- st_buffer(r_poly_smooth, -0.2)
+    
+    ggplot() +
+      geom_sf(data = r_poly_ruff, fill = "lightblue", color = "black", alpha = 0.5) +
+      geom_sf(data = r_poly_smooth, fill = "red", color = "darkred", alpha = 0.5) +
+      geom_sf(data = shrunken_polygon, fill = "darkblue", color = "blue", alpha = 0.5) +
+      ggtitle("Resized Polygons with Holes") +
+      theme_minimal()
+    
+    # Get the coordinates
+    coords <- sf::st_coordinates(shrunken_polygon )[, 1:2]
+    
+    pol = tibble(x = coords[,1], y = coords[,2], 
+                 id_cell = i)
+    pol = pol %>% 
+      mutate(x1 = x,
+             y1 = y,
+             x2 = c(pol$x[-1], pol$x[1]),
+             y2 = c(pol$y[-1], pol$y[1]))
+    
+    hypo_cell = rbind(hypo_cell, pol)
+    
+    
+  }
+  
+  
+  center = hypo_cell%>%
+    dplyr::group_by()%>%
+    dplyr::summarise(cx = mean(x), cy = mean(y), .groups="drop")
+  
+  cell = hypo_cell%>%
+    dplyr::group_by(id_cell)%>%
+    dplyr::summarise(mx = mean(x), my = mean(y),
+                     .groups="drop")%>%
+    mutate(euc = sqrt((mx-center$cx)^2+(my-center$cy)^2),
+           atan = atan2(my, mx))
+  
+  hypo_cell = hypo_cell %>%
+    left_join(cell, by = "id_cell")
+  hypo_cell%>% 
+    ggplot(aes(x,y))+
+    #geom_polygon(aes(x,y), data = pol_out)+
+    geom_polygon(aes(fill = id_cell, group = factor(id_cell)))+
+    geom_point(aes(x,y), data = hypo_cell %>%  mutate(dist= sqrt((x)^2+(y)^2)) %>% 
+                 filter(dist > 20.6))+
+    #geom_path(data = cir(hypo_cell, 142), aes(x, y), color = "red", linewidth = 1) +  # Add circle
+    coord_fixed()+
+    theme_classic()+
+    viridis::scale_fill_viridis(option = "A")
+  
+  outer = hypo_cell %>%  mutate(dist= sqrt((x)^2+(y)^2)) %>% 
+    filter(dist > 20.6) %>% 
+    mutate(atan = atan2(y, x)) %>% arrange(atan)
+  snapped_outer <- snap_to_circle(outer, radii = 21.2)
+  
+  sf_linestring <- st_sfc(st_linestring(as.matrix(rbind(snapped_outer[, c("snapped_x", "snapped_y")],snapped_outer[1, c("snapped_x", "snapped_y")]))), crs = 2056)
+  plot(sf_linestring)
+  my_multilinestring = sf::st_sf(geom = sf::st_sfc(sf_linestring), crs = 2056)
+  r_poly_smooth <-  sf::st_union(my_multilinestring)%>% sf::st_polygonize() %>% sf::st_collection_extract()
+  out_wall <- sf::st_coordinates(r_poly_smooth)[, 1:2]
+  pol_out = tibble(x = out_wall[,1], y = out_wall[,2], 
+                   id_cell = max(hypo_cell$id_cell)+1)
+  pol_out = pol_out%>% 
+    mutate(x1 = x,
+           y1 = y,
+           x2 = c(pol_out$x[-1], pol_out$x[1]),
+           y2 = c(pol_out$y[-1], pol_out$y[1]), 
+           mx = 0, my = 0,
+           euc = sqrt(x^2+y^2),
+           atan = atan2(y, x))
+  
+  
+  rbind (hypo_cell) %>% 
+    ggplot(aes(x,y))+
+    geom_polygon(aes(x,y), data = pol_out)+
+    geom_polygon(aes(fill = -id_cell, group = factor(id_cell)))+
+    #geom_point(colour = "white", size = 5, alpha = 0.5)+
+    #geom_path(data = circle_data, aes(x, y), color = "red", linewidth = 1) +  # Add circle
+    coord_fixed()+
+    theme_classic()+
+    viridis::scale_fill_viridis(option = "A")
+  
+  
+  
+  write_geo(rbind (pol_out, hypo_cell)%>%mutate(res = 1),dim = 2, path_geo = "~/GitHub/VergerLab/2D-HypocotylFEM/data/in/hypocross05.geo", extrude = 0)
+}
+
+
+write_geo <- function(data, dim = 2, path_geo, averaging = FALSE, extrude=0){
+  
+  date = Sys.time()
+  x1 = paste0('// Gmsh project created on ', date,'\nSetFactory("OpenCASCADE");\n//+\n')
+  
+  if(dim == 2){
+    data$z = 0
+    data$z1 = 0
+    data$z2 = 0
+  }
+  
+  k = h = j = 1
+  txt = x1
+  for(i in sort(unique(data$id_cell))){
+    tmp = data%>%filter(id_cell == i)
+    i_point = unique_point_id(tmp)
+    
+    i_point$idx = seq(k,-1+k+nrow(i_point),1)
+    i_point$idx2 = c(i_point$idx[-1],i_point$idx[1])
+    
+    if(i < max(data$id_cell)){
+      dots = paste0("Point(",i_point$idx,") = {",round(i_point$x,4), ' ,',round(i_point$y,4),' ,',round(i_point$z,4), ',1.0};\n', collapse = "")
+      Lines = paste0("Line(",i_point$idx,") = {",i_point$idx, ", ", i_point$idx2,'};\n//+\n', collapse = "")
+      Surf = paste0("Curve Loop(",j,") = {",paste0(i_point$idx, collapse = ", "),'};\n//+\nSurface(',
+                    h,") = {", j,'};\n//+\n', collapse = "")
+      Physical = paste0("//Physical Surface(",h,") = {",h,"};\n")
+      
+      txt = paste0(txt, dots, Lines, Surf, Physical)
+    }else{
+      dots = paste0("Point(",i_point$idx,") = {",round(i_point$x,4), ' ,',round(i_point$y,4),' ,',round(i_point$z,4), ',0.5};\n', collapse = "")
+      Lines = paste0("Line(",i_point$idx,") = {",i_point$idx, ", ", i_point$idx2,'};\n//+\n', collapse = "")
+      Surf = paste0("Curve Loop(",j,") = {",paste0(i_point$idx, collapse = ", "),'};\n//+\nPlane Surface(',
+                    h,") = {", paste0(sort(seq(1,j,2), decreasing = T), collapse = ", "),'};\n//+\n', collapse = "")
+      Physical = paste0("Physical Surface(0) = {",h,"};\n")
+      
+      txt = paste0(txt, dots, Lines, Surf, Physical)
+    }
+    
+    
+    
+    
+    h = h+1
+    j = j+2
+    k = max(i_point$idx)+1
+  }
+  write(txt, path_geo)
+}
 
