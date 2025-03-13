@@ -32,7 +32,14 @@ source("./src/io_function/io_function.R")
 # Run python script with the FEM
 # 2D mesh representing the cell wall of a cross section of a plant tissue.
 
+orga_cross = create_cross_section()
 
+orga_cross%>%mutate(id_cell = ifelse(id_cell == 62, 0, id_cell)) %>% 
+  ggplot(aes(x,y))+
+  geom_polygon(aes(fill = -id_cell, group = factor(id_cell)))+
+  coord_fixed()+
+  theme_classic()+
+  viridis::scale_fill_viridis(option = "A")
 
 system("python ./src/script/cross.py")
 

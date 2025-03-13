@@ -264,6 +264,7 @@ snap_to_circle <- function(data, radii) {
 }
 
 create_cross_section <- function(){
+  require(sf)
   rows = 20
   cols = 8
   hex_df <- hex_grid(rows, cols, size = 3)
@@ -294,11 +295,11 @@ create_cross_section <- function(){
     arrange(euc, atan, id) %>% 
     mutate(type = sort(rep(names, 7)))
   
-  hypo_cell %>% ggplot(aes(hex_x,hex_y))+
-    geom_polygon(aes(group = id), colour = "white", size = 3, alpha =0.2, data =hex_df)+
-    geom_polygon(aes(group = id), colour = "white", size = 3)+
-    geom_point()+
-    coord_fixed()+theme_classic()
+  # hypo_cell %>% ggplot(aes(hex_x,hex_y))+
+  #   geom_polygon(aes(group = id), colour = "white", size = 3, alpha =0.2, data =hex_df)+
+  #   geom_polygon(aes(group = id), colour = "white", size = 3)+
+  #   geom_point()+
+  #   coord_fixed()+theme_classic()
   
   radii = c(1:17,21)
   # radii = c(21)
@@ -309,10 +310,11 @@ create_cross_section <- function(){
   snapped_data = snapp
   df_hypo = snapped_data %>% mutate(x = snapped_x, y = snapped_y) %>% 
     left_join(binder, by = "id")
-  df_hypo %>% ggplot(aes(snapped_x,snapped_y))+
-    geom_polygon(aes(group = id_cell), colour = "white", size = 3)+
-    geom_point()+
-    coord_fixed()
+  # df_hypo %>% ggplot(aes(snapped_x,snapped_y))+
+  #   geom_polygon(aes(group = id_cell), colour = "white", size = 2)+
+  #   geom_point()+
+  #   coord_fixed()+
+  #   theme_classic()
   
   id_cell_vector = unique(df_hypo$id_cell)
   
@@ -329,12 +331,12 @@ create_cross_section <- function(){
     r_poly_smooth <- smoothr::smooth(r_poly_ruff, method = "ksmooth", smoothness = 0.5)
     shrunken_polygon <- st_buffer(r_poly_smooth, -0.2)
     
-    ggplot() +
-      geom_sf(data = r_poly_ruff, fill = "lightblue", color = "black", alpha = 0.5) +
-      geom_sf(data = r_poly_smooth, fill = "red", color = "darkred", alpha = 0.5) +
-      geom_sf(data = shrunken_polygon, fill = "darkblue", color = "blue", alpha = 0.5) +
-      ggtitle("Resized Polygons with Holes") +
-      theme_minimal()
+    # ggplot() +
+    #   geom_sf(data = r_poly_ruff, fill = "lightblue", color = "black", alpha = 0.5) +
+    #   geom_sf(data = r_poly_smooth, fill = "red", color = "darkred", alpha = 0.5) +
+    #   geom_sf(data = shrunken_polygon, fill = "darkblue", color = "blue", alpha = 0.5) +
+    #   ggtitle("Resized Polygons with Holes") +
+    #   theme_minimal()
     
     # Get the coordinates
     coords <- sf::st_coordinates(shrunken_polygon )[, 1:2]
@@ -366,16 +368,16 @@ create_cross_section <- function(){
   
   hypo_cell = hypo_cell %>%
     left_join(cell, by = "id_cell")
-  hypo_cell%>% 
-    ggplot(aes(x,y))+
-    #geom_polygon(aes(x,y), data = pol_out)+
-    geom_polygon(aes(fill = id_cell, group = factor(id_cell)))+
-    geom_point(aes(x,y), data = hypo_cell %>%  mutate(dist= sqrt((x)^2+(y)^2)) %>% 
-                 filter(dist > 20.6))+
-    #geom_path(data = cir(hypo_cell, 142), aes(x, y), color = "red", linewidth = 1) +  # Add circle
-    coord_fixed()+
-    theme_classic()+
-    viridis::scale_fill_viridis(option = "A")
+  # hypo_cell%>% 
+  #   ggplot(aes(x,y))+
+  #   #geom_polygon(aes(x,y), data = pol_out)+
+  #   geom_polygon(aes(fill = id_cell, group = factor(id_cell)))+
+  #   geom_point(aes(x,y), data = hypo_cell %>%  mutate(dist= sqrt((x)^2+(y)^2)) %>% 
+  #                filter(dist > 20.6))+
+  #   #geom_path(data = cir(hypo_cell, 142), aes(x, y), color = "red", linewidth = 1) +  # Add circle
+  #   coord_fixed()+
+  #   theme_classic()+
+  #   viridis::scale_fill_viridis(option = "A")
   
   outer = hypo_cell %>%  mutate(dist= sqrt((x)^2+(y)^2)) %>% 
     filter(dist > 20.6) %>% 
@@ -383,7 +385,7 @@ create_cross_section <- function(){
   snapped_outer <- snap_to_circle(outer, radii = 21.2)
   
   sf_linestring <- st_sfc(st_linestring(as.matrix(rbind(snapped_outer[, c("snapped_x", "snapped_y")],snapped_outer[1, c("snapped_x", "snapped_y")]))), crs = 2056)
-  plot(sf_linestring)
+  # plot(sf_linestring)
   my_multilinestring = sf::st_sf(geom = sf::st_sfc(sf_linestring), crs = 2056)
   r_poly_smooth <-  sf::st_union(my_multilinestring)%>% sf::st_polygonize() %>% sf::st_collection_extract()
   out_wall <- sf::st_coordinates(r_poly_smooth)[, 1:2]
@@ -398,20 +400,10 @@ create_cross_section <- function(){
            euc = sqrt(x^2+y^2),
            atan = atan2(y, x))
   
-  
-  rbind (hypo_cell) %>% 
-    ggplot(aes(x,y))+
-    geom_polygon(aes(x,y), data = pol_out)+
-    geom_polygon(aes(fill = -id_cell, group = factor(id_cell)))+
-    #geom_point(colour = "white", size = 5, alpha = 0.5)+
-    #geom_path(data = circle_data, aes(x, y), color = "red", linewidth = 1) +  # Add circle
-    coord_fixed()+
-    theme_classic()+
-    viridis::scale_fill_viridis(option = "A")
+  write_geo(rbind (pol_out, hypo_cell)%>%mutate(res = 1),dim = 2, path_geo = "~/GitHub/VergerLab/2D-HypocotylFEM/data/in/Orga_cross.geo", extrude = 0)
+  return (rbind (pol_out, hypo_cell)%>%mutate(res = 1))
   
   
-  
-  write_geo(rbind (pol_out, hypo_cell)%>%mutate(res = 1),dim = 2, path_geo = "~/GitHub/VergerLab/2D-HypocotylFEM/data/in/hypocross05.geo", extrude = 0)
 }
 
 
