@@ -98,10 +98,12 @@ Stress distribution in the edge region of a longitudinal section of epidermal ce
 
 ## Citation
 
-cite the preprint as soon as it is out.
-Meanwhile:
+> [**Preprint**](https://doi.org/10.1101/2025.04.03.646819)
+> 
+> Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascon, Richard S Smith, Olivier Ali, Stéphane Verger, 2025.
+> *Outer epidermal edges mediate cell-cell adhesion for tissue integrity in plants*. bioRxiv 2025.04.03.646819
+> 
 
->  Özer Erguvan, Adrien Heymans, Asal Atakhani, Elsa Gascon, Olivier Ali, Stéphane Verger. 2024. "Ultrastructural Characterization of Cell Adhesion in Plants"; Plant Computational Biology Workshop 2024
 
 
 
