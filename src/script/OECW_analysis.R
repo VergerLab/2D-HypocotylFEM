@@ -83,7 +83,7 @@ ggplot()+
        y = "Stress Magnitude [MPa]")+
   xlim(3,23.5)+
   theme_classic()
-ggsave("./data/out/img/Cross_StressQ.svg")
+ggsave("./data/out/img/Cross_StressQ_v2.svg")
 
 
 ################
