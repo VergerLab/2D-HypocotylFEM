@@ -47,21 +47,21 @@ system("python ./src/script/cross.py")
 path_csv = "./data/out/cross/csv/"
 fls = list.files(path_csv)
 
-data_cross_raw = read.csv(paste0(path_csv, fls[1]))
+data_cross_raw = read.csv(paste0(path_csv, fls[2]))
 data_cross = stress_strain(data_cross_raw)
 data_cross = concatenate_res(data_cross)
 
 tmp1 = data_cross %>%
-  mutate(x1 = x + pcstress_main/100 * sin(angle_stress_mod),
-         x2 = x - pcstress_main/100 * sin(angle_stress_mod),
-         y1 = y + pcstress_main/100 * cos(angle_stress_mod),
-         y2 = y - pcstress_main/100 * cos(angle_stress_mod))
+  mutate(x1 = x + pcstress_main/200 * sin(angle_stress_mod),
+         x2 = x - pcstress_main/200 * sin(angle_stress_mod),
+         y1 = y + pcstress_main/200 * cos(angle_stress_mod),
+         y2 = y - pcstress_main/200 * cos(angle_stress_mod))
 
 tmp2 = data_cross%>%
-  mutate(x1 = x + pcstress_secd/100 * cos(angle_stress_mod),
-         x2 = x - pcstress_secd/100 * cos(angle_stress_mod),
-         y1 = y - pcstress_secd/100 * sin(angle_stress_mod),
-         y2 = y + pcstress_secd/100 * sin(angle_stress_mod))
+  mutate(x1 = x + pcstress_secd/200 * cos(angle_stress_mod),
+         x2 = x - pcstress_secd/200 * cos(angle_stress_mod),
+         y1 = y - pcstress_secd/200 * sin(angle_stress_mod),
+         y2 = y + pcstress_secd/200 * sin(angle_stress_mod))
 
 glyph_to_obj(tmp1, path = paste0("./data/out/cross/glyphs/cross_stress1.obj"))
 glyph_to_obj(tmp2, path = paste0("./data/out/cross/glyphs/cross_stress2.obj"))
@@ -78,10 +78,10 @@ ggplot()+
 
 ggplot()+
   geom_point(aes(euc,stress_magnitude), data = data_cross)+
-  viridis::scale_colour_viridis()+
-  labs(x = "distance from center [µm]",
+  labs(x = "Distance from center [µm]",
        y = "Stress Magnitude [MPa]")+
-  xlim(3,23.5)+
+  xlim(7.5,53)+
+  ylim(0, 50)+
   theme_classic()
 ggsave("./data/out/img/Cross_StressQ_v2.svg")
 
